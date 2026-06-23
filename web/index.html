@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SurgMentor — Agentic OSCE Trainer</title>
+<!-- Inter via Google Fonts; system-font fallback ensures usability if CDN is unavailable -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+/* ── Design System ────────────────────────────────────────────────── */
+:root {
+  /* Backgrounds */
+  --bg-page:       #f8fafc;
+  --bg-card:       #ffffff;
+  --bg-surface:    #f1f5f9;
+
+  /* Brand blue — trustworthy, medical */
+  --blue-900:      #1e3a5f;
+  --blue-700:      #1d4ed8;
+  --blue-600:      #2563eb;
+  --blue-100:      #dbeafe;
+  --blue-50:       #eff6ff;
+
+  /* Text */
+  --text-primary:  #0f172a;
+  --text-secondary:#475569;
+  --text-tertiary: #94a3b8;
+
+  /* Borders */
+  --border:        #e2e8f0;
+
+  /* Semantic */
+  --success:       #059669;
+  --success-bg:    #ecfdf5;
+  --error:         #dc2626;
+  --error-bg:      #fef2f2;
+  --warning:       #d97706;
+  --warning-bg:    #fffbeb;
+
+  /* Shadows (layered for depth) */
+  --shadow-sm:  0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md:  0 1px 3px rgba(0,0,0,0.08), 0 8px 24px rgba(15,23,42,0.06);
+  --shadow-lg:  0 2px 4px rgba(0,0,0,0.06), 0 16px 40px rgba(15,23,42,0.10);
+
+  /* Radius */
+  --radius-sm:  8px;
+  --radius-md:  12px;
+  --radius-lg:  16px;
+  --radius-xl:  20px;
+  --radius-full:9999px;
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+}
+
+/* ── Reset ────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+button { font-family: var(--font-sans); }
+
+/* ── Focus states ─────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--blue-600);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ── Layout ───────────────────────────────────────────────────────── */
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ── App Header ───────────────────────────────────────────────────── */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255,255,255,0.96);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.header-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Brand */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.brand-icon { display: block; flex-shrink: 0; }
+.brand-name {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.03em;
+}
+
+/* Pill navigation */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  justify-content: center;
+}
+.nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 15px;
+  border-radius: var(--radius-full);
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.nav-btn svg { flex-shrink: 0; }
+.nav-btn:hover { background: var(--bg-surface); color: var(--text-primary); }
+.nav-btn.active {
+  background: var(--blue-50);
+  color: var(--blue-700);
+  font-weight: 600;
+}
+
+/* Session debug badge — shown at low opacity, hidden on mobile */
+.session-debug {
+  margin-left: auto;
+  font-size: 0.6875rem;
+  font-family: monospace;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+  opacity: 0.45;
+  letter-spacing: 0;
+}
+
+/* ── Hero Band ────────────────────────────────────────────────────── */
+.hero {
+  background: radial-gradient(ellipse 90% 70% at 50% -10%, #eff6ff 0%, var(--bg-page) 65%);
+  padding: 52px 24px 44px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+.hero-eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--blue-700);
+  margin-bottom: 12px;
+}
+.hero-headline {
+  font-size: 2.375rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.18;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+.hero-sub {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  max-width: 520px;
+  margin: 0 auto 20px;
+  line-height: 1.65;
+}
+.hero-badges {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 13px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── Main Content ─────────────────────────────────────────────────── */
+#main-content {
+  padding-top: 32px;
+  padding-bottom: 48px;
+}
+
+/* ── Views ────────────────────────────────────────────────────────── */
+.view { display: none; }
+.view.active {
+  display: block;
+  animation: viewFadeIn 0.18s ease-out both;
+}
+@keyframes viewFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── Cards ────────────────────────────────────────────────────────── */
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  padding: 28px 32px;
+  margin-bottom: 20px;
+}
+.card-osce { border-top: 3px solid var(--blue-700); }
+.card-heading {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+.card-intro {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+/* ── Buttons ──────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s, transform 0.15s, border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+.btn svg { flex-shrink: 0; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important; }
+
+.btn-primary {
+  background: var(--blue-700);
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(29,78,216,0.2), 0 2px 8px rgba(29,78,216,0.10);
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--blue-600);
+  box-shadow: 0 2px 4px rgba(29,78,216,0.25), 0 4px 16px rgba(29,78,216,0.15);
+  transform: translateY(-1px);
+}
+.btn-primary:active:not(:disabled) { transform: translateY(0); }
+
+.btn-secondary {
+  background: #fff;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.btn-secondary:hover:not(:disabled) {
+  border-color: var(--blue-700);
+  color: var(--blue-700);
+  background: var(--blue-50);
+}
+
+.btn-warning {
+  background: #fff;
+  color: var(--warning);
+  border: 1px solid #fcd34d;
+  box-shadow: var(--shadow-sm);
+}
+.btn-warning:hover:not(:disabled) {
+  background: var(--warning-bg);
+  border-color: var(--warning);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid transparent;
+}
+.btn-ghost:hover:not(:disabled) {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+
+.btn-sm { padding: 7px 14px; font-size: 0.8125rem; }
+.btn-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+/* ── Composer (textarea frame) ────────────────────────────────────── */
+.composer {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin-top: 16px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.composer:focus-within {
+  border-color: var(--blue-700);
+  box-shadow: 0 0 0 3px rgba(29,78,216,0.10);
+  background: #fff;
+}
+textarea {
+  display: block;
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-size: 0.9rem;
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  resize: none;
+  min-height: 44px;
+  max-height: 160px;
+  overflow-y: auto;
+  line-height: 1.55;
+  outline: none;
+}
+textarea::placeholder { color: var(--text-tertiary); }
+.composer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  gap: 10px;
+}
+.composer-hint {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+
+/* ── Chat messages ────────────────────────────────────────────────── */
+.chat-messages {
+  min-height: 200px;
+  max-height: 480px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 4px 0;
+  scroll-behavior: smooth;
+}
+
+/* Message row */
+.msg {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  animation: msgFadeIn 0.18s ease both;
+}
+.msg-user { flex-direction: row-reverse; }
+@keyframes msgFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Avatar dot */
+.msg-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  line-height: 1;
+  user-select: none;
+}
+.msg-user .msg-avatar {
+  background: var(--blue-700);
+  color: #fff;
+}
+.msg-assistant .msg-avatar {
+  background: #fff;
+  border: 1.5px solid var(--border);
+  color: var(--blue-700);
+}
+
+/* Speech bubble */
+.msg-bubble {
+  max-width: 76%;
+  padding: 11px 16px;
+  font-size: 0.9rem;
+  line-height: 1.58;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.msg-user .msg-bubble {
+  background: linear-gradient(135deg, var(--blue-700) 0%, var(--blue-600) 100%);
+  color: #fff;
+  border-radius: 20px 20px 4px 20px;
+  box-shadow: 0 2px 8px rgba(29,78,216,0.22);
+}
+.msg-assistant .msg-bubble {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 4px 20px 20px 20px;
+  box-shadow: var(--shadow-sm);
+  color: var(--text-primary);
+}
+
+/* Typing indicator */
+.typing-dots { display: flex; gap: 4px; align-items: center; padding: 6px 0; }
+.typing-dots span {
+  width: 7px; height: 7px;
+  background: var(--text-tertiary);
+  border-radius: 50%;
+  animation: dotBounce 1.2s infinite;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes dotBounce {
+  0%,80%,100% { transform: translateY(0); }
+  40%         { transform: translateY(-6px); }
+}
+
+/* ── OSCE Progress Component ──────────────────────────────────────── */
+.osce-progress {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+.osce-progress.active {
+  border-color: var(--blue-100);
+  box-shadow: 0 0 0 1px var(--blue-100), var(--shadow-sm);
+}
+.osce-progress-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.osce-state-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 11px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.idle-pill   { background: var(--bg-surface); color: var(--text-tertiary); }
+.active-pill { background: var(--blue-50);    color: var(--blue-700); }
+.done-pill   { background: var(--success-bg); color: var(--success); }
+
+.osce-step-track {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+.step-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background 0.3s, box-shadow 0.3s;
+  flex-shrink: 0;
+}
+.step-dot.done    { background: var(--blue-700); }
+.step-dot.current {
+  background: var(--blue-600);
+  box-shadow: 0 0 0 3px var(--blue-100);
+}
+.osce-step-label {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* ── Score Panel ──────────────────────────────────────────────────── */
+.score-panel {
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--blue-100);
+  margin-top: 24px;
+  display: none;
+  animation: viewFadeIn 0.25s ease-out both;
+}
+.score-panel.visible { display: block; }
+.score-header {
+  background: linear-gradient(135deg, var(--blue-900) 0%, var(--blue-700) 100%);
+  padding: 22px 32px;
+  color: #fff;
+}
+.score-header-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.score-complete-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px; height: 36px;
+  background: rgba(255,255,255,0.15);
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+.score-header-text {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.score-body {
+  background: var(--bg-card);
+  padding: 24px 32px;
+}
+
+/* ── Prose ────────────────────────────────────────────────────────── */
+.prose h1,.prose h2,.prose h3 { margin: 18px 0 8px; font-weight: 700; color: var(--text-primary); }
+.prose h2 { font-size: 1.05rem; }
+.prose h3 { font-size: 0.95rem; }
+.prose p  { margin-bottom: 8px; line-height: 1.65; }
+.prose ul,.prose ol { margin: 8px 0 8px 20px; }
+.prose li { margin-bottom: 4px; line-height: 1.55; }
+.prose table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.875rem; }
+.prose th { background: var(--bg-surface); padding: 8px 12px; text-align: left; font-weight: 600; border-bottom: 2px solid var(--border); }
+.prose td { padding: 7px 12px; border-bottom: 1px solid var(--border); }
+.prose strong { font-weight: 700; }
+.prose em { font-style: italic; color: var(--text-secondary); }
+.prose code { background: var(--bg-surface); padding: 2px 6px; border-radius: var(--radius-sm); font-size: 0.85em; }
+.score-body .prose { font-size: 0.9375rem; }
+
+/* ── Inline messages ──────────────────────────────────────────────── */
+.inline-msg {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  margin-top: 12px;
+}
+.inline-msg.error {
+  display: flex;
+  background: var(--error-bg);
+  color: var(--error);
+  border: 1px solid #fca5a5;
+}
+.inline-msg.info {
+  display: flex;
+  background: var(--blue-50);
+  color: var(--blue-700);
+  border: 1px solid var(--blue-100);
+}
+
+/* ── Footer ───────────────────────────────────────────────────────── */
+.page-footer {
+  border-top: 1px solid var(--border);
+  padding: 20px 0 28px;
+}
+.footer-text {
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+}
+
+/* ── Utility ──────────────────────────────────────────────────────── */
+.hidden { display: none !important; }
+
+/* ── Responsive ───────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .container { padding: 0 16px; }
+  .header-inner { padding: 0 16px; gap: 12px; }
+  .session-debug { display: none; }
+  .hero { padding: 36px 16px 30px; }
+  .hero-headline { font-size: 1.75rem; }
+  .hero-badges { display: none; }
+  .card { padding: 20px; }
+  .score-header { padding: 18px 20px; }
+  .score-body { padding: 18px 20px; }
+  .chat-messages { max-height: 320px; }
+  .osce-progress-inner { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .btn-row { flex-direction: column; }
+  .btn-row .btn { width: 100%; justify-content: center; }
+  .nav-label { display: none; }
+  .nav-btn { padding: 7px 10px; }
+}
+@media (max-width: 768px) {
+  .session-debug { display: none; }
+}
+
+/* ── Reduced motion ───────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ── App Header ─────────────────────────────────────────────────── -->
+<header class="app-header" role="banner">
+  <div class="header-inner">
+
+    <!-- Brand mark -->
+    <a class="brand" href="#" onclick="showView('chat'); return false;" aria-label="SurgMentor — go to Case Retrieval">
+      <svg class="brand-icon" width="28" height="28" viewBox="0 0 28 28" fill="none"
+           xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+        <rect width="28" height="28" rx="8" fill="#1d4ed8"/>
+        <path d="M14 7v14M7 14h14" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      <span class="brand-name">SurgMentor</span>
+    </a>
+
+    <!-- Pill navigation -->
+    <nav class="nav" role="tablist" aria-label="Main navigation">
+      <button class="nav-btn active" role="tab" aria-selected="true"
+              onclick="showView('chat')" aria-controls="view-chat">
+        <!-- Stethoscope icon -->
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false">
+          <path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6 6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/>
+          <path d="M8 15v1a6 6 0 0 0 6 6 6 6 0 0 0 6-6v-4"/>
+          <circle cx="20" cy="10" r="2"/>
+        </svg>
+        <span class="nav-label">Cases</span>
+      </button>
+      <button class="nav-btn" role="tab" aria-selected="false"
+              onclick="showView('osce')" aria-controls="view-osce">
+        <!-- Clipboard icon -->
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false">
+          <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+          <rect x="9" y="3" width="6" height="4" rx="1"/>
+          <path d="M9 12h6M9 16h4"/>
+        </svg>
+        <span class="nav-label">OSCE</span>
+      </button>
+      <button class="nav-btn" role="tab" aria-selected="false"
+              onclick="showView('profile')" aria-controls="view-profile">
+        <!-- User icon -->
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span class="nav-label">Profile</span>
+      </button>
+    </nav>
+
+    <!-- Session badge (debug; hidden via CSS on most viewports) -->
+    <span id="footer-session" class="session-debug" aria-hidden="true"></span>
+
+  </div>
+</header><!-- /app-header -->
+
+<!-- ── Hero Band ──────────────────────────────────────────────────── -->
+<section class="hero" id="hero-section" aria-label="SurgMentor overview">
+  <div class="container">
+    <p class="hero-eyebrow">Surgical Education &nbsp;&middot;&nbsp; AI Agents</p>
+    <h1 class="hero-headline">Train Smarter.<br>Operate Safer.</h1>
+    <p class="hero-sub">
+      Agentic OSCE-style training with real surgical case retrieval,
+      clinical reasoning assessment, and personalised feedback.
+    </p>
+    <div class="hero-badges" aria-hidden="true">
+      <span class="hero-badge">
+        <!-- Microscope -->
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" focusable="false">
+          <path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/>
+          <path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2z"/>
+          <path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/>
+        </svg>
+        RAG-powered cases
+      </span>
+      <span class="hero-badge">
+        <!-- Clipboard check -->
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" focusable="false">
+          <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+          <rect x="9" y="3" width="6" height="4" rx="1"/>
+          <path d="M9 12l2 2 4-4"/>
+        </svg>
+        Structured OSCE practice
+      </span>
+      <span class="hero-badge">
+        <!-- Chart bar -->
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" focusable="false">
+          <path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/>
+        </svg>
+        Score tracking
+      </span>
+    </div>
+  </div>
+</section><!-- /hero -->
+
+<!-- ── Main Content ────────────────────────────────────────────────── -->
+<main class="container" id="main-content" role="main">
+
+  <!-- ── VIEW 1: Case Retrieval ───────────────────────────────────── -->
+  <div id="view-chat" class="view active" role="tabpanel" aria-label="Case Retrieval">
+    <div class="card">
+      <h2 class="card-heading">Case Retrieval</h2>
+      <p class="card-intro">
+        Ask questions about surgical cases or request a case by diagnosis.
+        The agent retrieves relevant cases from its knowledge base and responds
+        with structured clinical context and source citations.
+      </p>
+
+      <div id="chat-messages" class="chat-messages"
+           aria-live="polite" aria-label="Chat messages" aria-atomic="false"></div>
+      <div id="chat-error" class="inline-msg" role="alert"></div>
+
+      <div class="composer">
+        <textarea id="chat-input"
+                  placeholder="e.g. show me a case about appendicitis"
+                  rows="1"
+                  aria-label="Your message"></textarea>
+        <div class="composer-actions">
+          <span class="composer-hint">Enter to send &nbsp;&middot;&nbsp; Shift+Enter for new line</span>
+          <button class="btn btn-primary btn-sm" id="chat-send-btn"
+                  onclick="chatSend()" aria-label="Send message">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2.5" stroke-linecap="round" aria-hidden="true" focusable="false">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+            Send
+          </button>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost btn-sm" onclick="chatClear()" aria-label="Start a new conversation">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false">
+            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+            <path d="M21 3v5h-5"/>
+            <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+            <path d="M8 16H3v5"/>
+          </svg>
+          New Conversation
+        </button>
+      </div>
+    </div>
+  </div><!-- /view-chat -->
+
+  <!-- ── VIEW 2: OSCE Examination ─────────────────────────────────── -->
+  <div id="view-osce" class="view" role="tabpanel" aria-label="OSCE Examination">
+
+    <!-- OSCE progress tracker; built by buildOsceStepDots() -->
+    <div id="osce-status" class="osce-progress"
+         aria-live="polite" aria-label="OSCE session status"></div>
+
+    <div class="card card-osce">
+      <h2 class="card-heading">OSCE Examination</h2>
+      <p class="card-intro">
+        The AI examiner presents a surgical case step-by-step.
+        Respond as you would in a real OSCE station.
+        Your clinical reasoning is scored at the end.
+      </p>
+
+      <div id="osce-messages" class="chat-messages"
+           aria-live="polite" aria-label="OSCE session messages" aria-atomic="false"></div>
+      <div id="osce-error" class="inline-msg" role="alert"></div>
+
+      <div id="osce-input-row" class="composer hidden" aria-hidden="true">
+        <textarea id="osce-input"
+                  placeholder="Type your clinical response…"
+                  rows="1"
+                  aria-label="Your clinical response"></textarea>
+        <div class="composer-actions">
+          <span class="composer-hint">Enter to send &nbsp;&middot;&nbsp; Shift+Enter for new line</span>
+          <button class="btn btn-primary btn-sm" id="osce-send-btn"
+                  onclick="osceSend()" aria-label="Send clinical response">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2.5" stroke-linecap="round" aria-hidden="true" focusable="false">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+            Send
+          </button>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="osce-start-btn" onclick="osceStart()"
+                aria-label="Start OSCE session">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"
+               aria-hidden="true" focusable="false">
+            <polygon points="5,3 19,12 5,21"/>
+          </svg>
+          Start Session
+        </button>
+        <button class="btn btn-warning hidden" id="osce-finish-btn" onclick="osceFinish()"
+                aria-label="End session and receive score">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"
+               aria-hidden="true" focusable="false">
+            <rect x="6" y="6" width="12" height="12" rx="2"/>
+          </svg>
+          End &amp; Score
+        </button>
+        <button class="btn btn-ghost" id="osce-reset-btn" onclick="osceReset()"
+                aria-label="Reset and start a new OSCE session">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false">
+            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+            <path d="M21 3v5h-5"/>
+            <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+            <path d="M8 16H3v5"/>
+          </svg>
+          New Session
+        </button>
+      </div>
+    </div><!-- /card-osce -->
+
+    <!-- Score / results panel -->
+    <div id="score-panel" class="score-panel">
+      <div class="score-header">
+        <div class="score-header-inner">
+          <span class="score-complete-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white"
+                 stroke-width="2.5" stroke-linecap="round" focusable="false">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M8 12l3 3 5-5"/>
+            </svg>
+          </span>
+          <span class="score-header-text">Session Complete</span>
+        </div>
+      </div>
+      <div class="score-body">
+        <div id="score-content" class="prose"></div>
+      </div>
+    </div><!-- /score-panel -->
+
+  </div><!-- /view-osce -->
+
+  <!-- ── VIEW 3: Student Profile ──────────────────────────────────── -->
+  <div id="view-profile" class="view" role="tabpanel" aria-label="Student Profile">
+
+    <div class="card">
+      <h2 class="card-heading">Your Performance</h2>
+      <p class="card-intro">
+        Complete OSCE sessions to build your profile.
+        Your history, average score, and weak areas appear here.
+      </p>
+      <div id="stats-content" class="prose">
+        <em>Click Refresh Stats to load your performance data.</em>
+      </div>
+      <div id="stats-error" class="inline-msg" role="alert"></div>
+      <div class="btn-row">
+        <button class="btn btn-secondary btn-sm" id="stats-refresh-btn"
+                onclick="profileRefresh()" aria-label="Refresh performance statistics">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false">
+            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+            <path d="M21 3v5h-5"/>
+            <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+            <path d="M8 16H3v5"/>
+          </svg>
+          Refresh Stats
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="card-heading">Study Plan</h2>
+      <p class="card-intro">
+        AI-generated study recommendations based on your performance
+        data and identified weak areas.
+      </p>
+      <div id="plan-content" class="prose">
+        <em>Click Generate Study Plan for AI-personalised recommendations.</em>
+      </div>
+      <div id="plan-error" class="inline-msg" role="alert"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="plan-btn"
+                onclick="profilePlan()" aria-label="Generate personalised study plan">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false">
+            <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
+          </svg>
+          Generate Study Plan
+        </button>
+      </div>
+    </div>
+
+  </div><!-- /view-profile -->
+
+</main><!-- /main-content -->
+
+<!-- ── Footer ─────────────────────────────────────────────────────── -->
+<footer class="page-footer" role="contentinfo">
+  <div class="container">
+    <p class="footer-text">
+      SurgMentor v1.0 &nbsp;&middot;&nbsp; Kaggle AI Agents Intensive 2026
+    </p>
+  </div>
+</footer>
+
+<script>
+/* ── Session ID ──────────────────────────────────────────────────── */
+function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0;
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+}
+
+let sessionId = sessionStorage.getItem('sm_session_id');
+if (!sessionId) {
+  sessionId = generateUUID();
+  sessionStorage.setItem('sm_session_id', sessionId);
+}
+document.getElementById('footer-session').textContent = 'session: ' + sessionId.slice(0, 8) + '…';
+
+/* ── OSCE step progress — initialise on page load ────────────────── */
+let osceActive   = false;
+let osceStep     = 0;
+let maxOsceSteps = 6;   // updated from API on start; mirrors backend MAX_OSCE_STEPS
+
+function buildOsceStepDots() {
+  const container = document.getElementById('osce-status');
+  const dots = Array.from({ length: maxOsceSteps }, (_, i) =>
+    '<span class="step-dot" data-step="' + i + '" title="Step ' + (i + 1) + '"></span>'
+  ).join('');
+  container.innerHTML =
+    '<div class="osce-progress-inner">' +
+      '<span id="osce-state-pill" class="osce-state-pill idle-pill">Not started</span>' +
+      '<div class="osce-step-track" id="osce-step-track" aria-hidden="true">' +
+        dots +
+      '</div>' +
+      '<span id="osce-step-label" class="osce-step-label">' +
+        'No active session — click Start Session to begin' +
+      '</span>' +
+    '</div>';
+}
+
+buildOsceStepDots();
+
+/* ── Navigation ──────────────────────────────────────────────────── */
+const VIEWS = ['chat', 'osce', 'profile'];
+
+function showView(name) {
+  VIEWS.forEach(v => {
+    document.getElementById('view-' + v).classList.toggle('active', v === name);
+  });
+  document.querySelectorAll('.nav-btn').forEach((btn, i) => {
+    const isActive = VIEWS[i] === name;
+    btn.classList.toggle('active', isActive);
+    btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+  });
+  // Hero: show only on Case Retrieval tab
+  const hero = document.getElementById('hero-section');
+  if (hero) hero.classList.toggle('hidden', name !== 'chat');
+  if (name === 'profile') profileRefresh();
+}
+
+/* ── API helpers ─────────────────────────────────────────────────── */
+async function apiPost(path, body) {
+  const r = await fetch(path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
+
+async function apiGet(path) {
+  const r = await fetch(path);
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
+
+/* ── Markdown render ─────────────────────────────────────────────── */
+function renderMd(text) {
+  if (typeof marked === 'undefined') return '<pre>' + escHtml(text) + '</pre>';
+  return marked.parse(text);
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ── Chat messages helpers ───────────────────────────────────────── */
+function appendMsg(containerId, role, text) {
+  const box = document.getElementById(containerId);
+  const wrap = document.createElement('div');
+  wrap.className = 'msg msg-' + role;
+
+  // Avatar dot
+  const avatar = document.createElement('div');
+  avatar.className = 'msg-avatar';
+  avatar.setAttribute('aria-hidden', 'true');
+  avatar.textContent = role === 'user' ? 'You' : 'S';
+
+  const bub = document.createElement('div');
+  bub.className = 'msg-bubble';
+  bub.textContent = text;
+
+  if (role === 'user') {
+    wrap.appendChild(bub);
+    wrap.appendChild(avatar);
+  } else {
+    wrap.appendChild(avatar);
+    wrap.appendChild(bub);
+  }
+
+  box.appendChild(wrap);
+  box.scrollTop = box.scrollHeight;
+  return bub;
+}
+
+function appendLoading(containerId) {
+  const box = document.getElementById(containerId);
+  const wrap = document.createElement('div');
+  wrap.className = 'msg msg-assistant';
+  wrap.id = containerId + '-loading';
+  const bub = document.createElement('div');
+  bub.className = 'msg-bubble';
+  bub.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+  wrap.appendChild(bub);
+  box.appendChild(wrap);
+  box.scrollTop = box.scrollHeight;
+}
+
+function removeLoading(containerId) {
+  const el = document.getElementById(containerId + '-loading');
+  if (el) el.remove();
+}
+
+function showError(elId, msg) {
+  const el = document.getElementById(elId);
+  el.textContent = msg;
+  el.className = 'inline-msg error';
+}
+function clearError(elId) {
+  const el = document.getElementById(elId);
+  el.textContent = '';
+  el.className = 'inline-msg';
+}
+
+/* ── Auto-resize textarea ────────────────────────────────────────── */
+function autoResize(ta) {
+  ta.style.height = 'auto';
+  ta.style.height = Math.min(ta.scrollHeight, 160) + 'px';
+}
+
+document.getElementById('chat-input').addEventListener('input', function(){ autoResize(this); });
+document.getElementById('osce-input').addEventListener('input', function(){ autoResize(this); });
+
+document.getElementById('chat-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); chatSend(); }
+});
+document.getElementById('osce-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); osceSend(); }
+});
+
+/* ═══════════════════════════════════════════════════════════════════
+   VIEW 1 — Case Retrieval (Free Chat)
+   ═══════════════════════════════════════════════════════════════════ */
+
+async function chatSend() {
+  const input = document.getElementById('chat-input');
+  const msg   = input.value.trim();
+  if (!msg) return;
+
+  clearError('chat-error');
+  input.value = '';
+  input.style.height = 'auto';
+
+  appendMsg('chat-messages', 'user', msg);
+  appendLoading('chat-messages');
+  document.getElementById('chat-send-btn').disabled = true;
+
+  try {
+    const data = await apiPost('/api/chat', { session_id: sessionId, message: msg });
+    removeLoading('chat-messages');
+    appendMsg('chat-messages', 'assistant', data.response);
+  } catch (err) {
+    removeLoading('chat-messages');
+    appendMsg('chat-messages', 'assistant',
+      '⚠️ Something went wrong. Please try again.');
+    showError('chat-error', 'Connection error: ' + err.message);
+  } finally {
+    document.getElementById('chat-send-btn').disabled = false;
+    input.focus();
+  }
+}
+
+async function chatClear() {
+  try {
+    const data = await apiPost('/api/osce/reset', { session_id: sessionId });
+    sessionId = data.new_session_id;
+    sessionStorage.setItem('sm_session_id', sessionId);
+    document.getElementById('footer-session').textContent =
+      'session: ' + sessionId.slice(0, 8) + '…';
+  } catch (_) { /* ignore reset errors */ }
+  document.getElementById('chat-messages').innerHTML = '';
+  clearError('chat-error');
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   VIEW 2 — OSCE Examination
+   ═══════════════════════════════════════════════════════════════════ */
+
+function setOsceUI(active, step, statusText) {
+  osceActive = active;
+  osceStep   = step;
+
+  // Rebuild dots if maxOsceSteps changed after API call returned max_steps
+  const currentDots = document.querySelectorAll('.step-dot').length;
+  if (currentDots !== maxOsceSteps) buildOsceStepDots();
+
+  // Base state class on the progress container
+  const status = document.getElementById('osce-status');
+  status.classList.toggle('active', active);
+
+  // State pill
+  const pill = document.getElementById('osce-state-pill');
+  if (pill) {
+    if (active) {
+      pill.textContent = '● Active';
+      pill.className = 'osce-state-pill active-pill';
+    } else if (step === 0) {
+      pill.textContent = '○ Not started';
+      pill.className = 'osce-state-pill idle-pill';
+    } else {
+      pill.textContent = '✓ Complete';
+      pill.className = 'osce-state-pill done-pill';
+    }
+  }
+
+  // Step dots
+  document.querySelectorAll('.step-dot').forEach((dot, i) => {
+    dot.classList.remove('done', 'current');
+    if (active) {
+      if (i < step - 1)        dot.classList.add('done');
+      else if (i === step - 1) dot.classList.add('current');
+    } else {
+      if (i < step) dot.classList.add('done');
+    }
+  });
+
+  // Step label
+  const label = document.getElementById('osce-step-label');
+  if (label) label.textContent = statusText;
+
+  // Input/button visibility
+  const inputRow = document.getElementById('osce-input-row');
+  inputRow.classList.toggle('hidden', !active);
+  inputRow.setAttribute('aria-hidden', active ? 'false' : 'true');
+  document.getElementById('osce-start-btn').classList.toggle('hidden', active);
+  document.getElementById('osce-finish-btn').classList.toggle('hidden', !active);
+}
+
+function showScorePanel(html) {
+  const panel = document.getElementById('score-panel');
+  document.getElementById('score-content').innerHTML = html;
+  panel.classList.add('visible');
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function hideScorePanel() {
+  const panel = document.getElementById('score-panel');
+  panel.classList.remove('visible');
+  document.getElementById('score-content').innerHTML = '';
+}
+
+async function osceStart() {
+  clearError('osce-error');
+  hideScorePanel();
+  document.getElementById('osce-start-btn').disabled = true;
+  appendLoading('osce-messages');
+
+  try {
+    const data = await apiPost('/api/osce/start', { session_id: sessionId });
+    removeLoading('osce-messages');
+    appendMsg('osce-messages', 'assistant', data.response);
+    maxOsceSteps = data.max_steps || maxOsceSteps;   // use backend constant
+    setOsceUI(data.osce_active, data.osce_step,
+      'Session active — Step ' + data.osce_step + ' / ' + maxOsceSteps);
+  } catch (err) {
+    removeLoading('osce-messages');
+    showError('osce-error', 'Could not start session: ' + err.message);
+  } finally {
+    document.getElementById('osce-start-btn').disabled = false;
+  }
+}
+
+async function osceSend() {
+  const input = document.getElementById('osce-input');
+  const msg   = input.value.trim();
+  if (!msg || !osceActive) return;
+
+  clearError('osce-error');
+  input.value = '';
+  input.style.height = 'auto';
+
+  appendMsg('osce-messages', 'user', msg);
+  appendLoading('osce-messages');
+  document.getElementById('osce-send-btn').disabled = true;
+
+  try {
+    const data = await apiPost('/api/osce/turn',
+      { session_id: sessionId, message: msg });
+    removeLoading('osce-messages');
+    appendMsg('osce-messages', 'assistant', data.response);
+
+    if (data.is_finish) {
+      setOsceUI(false, 0, 'Session complete');
+      showScorePanel(renderMd(data.response));
+    } else {
+      setOsceUI(data.osce_active, data.osce_step,
+        'Session active — Step ' + data.osce_step + ' / ' + maxOsceSteps);
+    }
+  } catch (err) {
+    removeLoading('osce-messages');
+    appendMsg('osce-messages', 'assistant',
+      '⚠️ Something went wrong. Please try again.');
+    showError('osce-error', 'Connection error: ' + err.message);
+  } finally {
+    document.getElementById('osce-send-btn').disabled = false;
+    if (osceActive) input.focus();
+  }
+}
+
+async function osceFinish() {
+  clearError('osce-error');
+  document.getElementById('osce-finish-btn').disabled = true;
+  appendLoading('osce-messages');
+
+  try {
+    const data = await apiPost('/api/osce/finish', { session_id: sessionId });
+    removeLoading('osce-messages');
+    appendMsg('osce-messages', 'assistant', data.response);
+    setOsceUI(false, 0, 'Session complete');
+    showScorePanel(renderMd(data.response));
+  } catch (err) {
+    removeLoading('osce-messages');
+    showError('osce-error', 'Could not finish session: ' + err.message);
+  } finally {
+    document.getElementById('osce-finish-btn').disabled = false;
+  }
+}
+
+async function osceReset() {
+  try {
+    const data = await apiPost('/api/osce/reset', { session_id: sessionId });
+    sessionId = data.new_session_id;
+    sessionStorage.setItem('sm_session_id', sessionId);
+    document.getElementById('footer-session').textContent =
+      'session: ' + sessionId.slice(0, 8) + '…';
+  } catch (_) { /* ignore */ }
+  document.getElementById('osce-messages').innerHTML = '';
+  clearError('osce-error');
+  hideScorePanel();
+  setOsceUI(false, 0, 'No active session — click Start Session to begin');
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   VIEW 3 — Student Profile
+   ═══════════════════════════════════════════════════════════════════ */
+
+async function profileRefresh() {
+  const btn = document.getElementById('stats-refresh-btn');
+  const el  = document.getElementById('stats-content');
+  clearError('stats-error');
+  btn.disabled = true;
+  btn.textContent = 'Loading…';
+  el.innerHTML = '<em>Loading…</em>';
+
+  try {
+    const data = await apiGet('/api/profile?session_id=' + encodeURIComponent(sessionId));
+    el.innerHTML = renderMd(data.stats_md);
+  } catch (err) {
+    el.innerHTML = '<em>Could not load stats.</em>';
+    showError('stats-error', 'Error: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Refresh Stats';
+  }
+}
+
+async function profilePlan() {
+  const btn = document.getElementById('plan-btn');
+  const el  = document.getElementById('plan-content');
+  clearError('plan-error');
+  btn.disabled = true;
+  btn.textContent = 'Generating…';
+  el.innerHTML = '<div class="typing-dots" style="padding:0"><span></span><span></span><span></span></div>';
+
+  try {
+    const data = await apiPost('/api/profile/plan', { session_id: sessionId });
+    el.innerHTML = renderMd(data.response);
+  } catch (err) {
+    el.innerHTML = '<em>Could not generate plan.</em>';
+    showError('plan-error', 'Error: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Generate Study Plan';
+  }
+}
+</script>
+</body>
+</html>

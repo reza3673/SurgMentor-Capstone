@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+<defs>
+  <radialGradient id="bgG" cx="18%" cy="28%" r="72%">
+    <stop offset="0%"   stop-color="#102234"/>
+    <stop offset="100%" stop-color="#060D16"/>
+  </radialGradient>
+  <radialGradient id="lgG" cx="0%" cy="45%" r="85%"
+      gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="760" y2="0">
+    <stop offset="0%"   stop-color="#14283C" stop-opacity="0.50"/>
+    <stop offset="100%" stop-color="#091420"    stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="ctrlG" cx="50%" cy="50%" r="50%">
+    <stop offset="0%"   stop-color="#2ECC8F" stop-opacity="0.24"/>
+    <stop offset="100%" stop-color="#2ECC8F" stop-opacity="0"/>
+  </radialGradient>
+  <pattern id="dots" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse">
+    <circle cx="15" cy="15" r="1.2" fill="#A0B4C8" fill-opacity="0.09"/>
+  </pattern>
+  <marker id="ah"  markerWidth="8" markerHeight="7" refX="7" refY="3.5" orient="auto">
+    <polygon points="0 0, 8 3.5, 0 7" fill="#1E6091"/>
+  </marker>
+  <marker id="ahg" markerWidth="8" markerHeight="7" refX="7" refY="3.5" orient="auto">
+    <polygon points="0 0, 8 3.5, 0 7" fill="#2ECC8F"/>
+  </marker>
+  <filter id="glo" x="-70%" y="-70%" width="240%" height="240%">
+    <feGaussianBlur stdDeviation="18"/>
+  </filter>
+</defs>
+<rect width="1600" height="900" fill="#091420"/>
+<rect width="1600" height="900" fill="url(#bgG)"/>
+<rect x="0" y="0" width="762" height="900" fill="url(#lgG)"/>
+<defs><linearGradient id="btmG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#091420" stop-opacity="0"/><stop offset="100%" stop-color="#030810" stop-opacity="0.6"/></linearGradient></defs>
+<rect x="0" y="740" width="1600" height="160" fill="url(#btmG)"/>
+<rect x="1060" y="0" width="540" height="520" fill="url(#dots)"/>
+<rect x="1005" y="403" width="290" height="34" rx="7" fill="#FFFFFF" fill-opacity="0.030"/>
+<rect x="1133" y="275" width="34" height="290" rx="7" fill="#FFFFFF" fill-opacity="0.030"/>
+<circle cx="1150" cy="420" r="155" fill="none" stroke="#1E6091" stroke-width="0.8" stroke-opacity="0.13"/>
+<circle cx="1150" cy="420" r="200" fill="none" stroke="#1E6091" stroke-width="0.8" stroke-opacity="0.07"/>
+<circle cx="1150" cy="420" r="248" fill="none" stroke="#1E6091" stroke-width="0.8" stroke-opacity="0.04"/>
+<circle cx="1150" cy="420" r="95" fill="url(#ctrlG)"/>
+<circle cx="1150" cy="420" r="56" fill="#2ECC8F" fill-opacity="0.06" filter="url(#glo)"/>
+<line x1="1108" y1="378" x2="1025" y2="295" stroke="#1E6091" stroke-width="1.5" stroke-opacity="1" marker-end="url(#ah)"/>
+<line x1="1191" y1="378" x2="1274" y2="295" stroke="#2ECC8F" stroke-width="1.5" stroke-opacity="1" marker-end="url(#ahg)"/>
+<line x1="1108" y1="461" x2="1025" y2="544" stroke="#1E6091" stroke-width="1.5" stroke-opacity="1" marker-end="url(#ah)"/>
+<line x1="1191" y1="461" x2="1274" y2="544" stroke="#1E6091" stroke-width="1.5" stroke-opacity="1" marker-end="url(#ah)"/>
+<line x1="1150" y1="102" x2="1150" y2="360" stroke="#2A7AB5" stroke-width="1.2" stroke-dasharray="5,3.5" stroke-opacity="0.80" marker-end="url(#ah)"/>
+<line x1="1120" y1="472" x2="950" y2="757" stroke="#4A6E8A" stroke-width="0.9" stroke-dasharray="4,3.5" stroke-opacity="0.55"/>
+<line x1="1150" y1="480" x2="1150" y2="757" stroke="#4A6E8A" stroke-width="0.9" stroke-dasharray="4,3.5" stroke-opacity="0.55"/>
+<line x1="1179" y1="472" x2="1350" y2="757" stroke="#4A6E8A" stroke-width="0.9" stroke-dasharray="4,3.5" stroke-opacity="0.55"/>
+<circle cx="1150" cy="420" r="68" fill="#2ECC8F" fill-opacity="0.09"/>
+<circle cx="1150" cy="420" r="56" fill="#0B1825" stroke="#2ECC8F" stroke-width="2"/>
+<text x="1150" y="411" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">Agent</text>
+<text x="1150" y="429" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">Controller</text>
+<path d="M 1132,450 A 18,18 0 1 1 1164,442" stroke="#2ECC8F" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-opacity="0.9"/>
+<polygon points="1164,435 1173,442 1157,442" fill="#2ECC8F" fill-opacity="0.9"/>
+<rect x="916" y="239" width="162" height="56" fill="#1A2B3C" rx="9" stroke="#1E6091" stroke-width="1.0"/>
+<rect x="916" y="239" width="162" height="3" fill="#2A7AB5" rx="0" stroke="none" stroke-width="1.5"/>
+<text x="997" y="260" font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">Case Retrieval</text>
+<text x="997" y="277" font-size="9" font-weight="normal" fill="#A0B4C8" text-anchor="middle" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">RAG  ·  Jina  ·  ChromaDB</text>
+<rect x="1221" y="239" width="162" height="56" fill="#1A2B3C" rx="9" stroke="#2ECC8F" stroke-width="1.5"/>
+<rect x="1221" y="239" width="162" height="3" fill="#2ECC8F" rx="0" stroke="none" stroke-width="1.5"/>
+<text x="1302" y="260" font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">OSCE Examiner</text>
+<text x="1302" y="277" font-size="9" font-weight="normal" fill="#A0B4C8" text-anchor="middle" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">Init  ·  Turn  ·  Finish</text>
+<rect x="916" y="544" width="162" height="56" fill="#1A2B3C" rx="9" stroke="#1E6091" stroke-width="1.0"/>
+<rect x="916" y="544" width="162" height="3" fill="#2A7AB5" rx="0" stroke="none" stroke-width="1.5"/>
+<text x="997" y="565" font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">Study Planner</text>
+<text x="997" y="582" font-size="9" font-weight="normal" fill="#A0B4C8" text-anchor="middle" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">Personalised  ·  Adaptive</text>
+<rect x="1221" y="544" width="162" height="56" fill="#1A2B3C" rx="9" stroke="#1E6091" stroke-width="1.0"/>
+<rect x="1221" y="544" width="162" height="3" fill="#2A7AB5" rx="0" stroke="none" stroke-width="1.5"/>
+<text x="1302" y="565" font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">Evaluation</text>
+<text x="1302" y="582" font-size="9" font-weight="normal" fill="#A0B4C8" text-anchor="middle" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">Score 0–10  ·  Rubric</text>
+<rect x="1006" y="66" width="288" height="36" fill="#1A2B3C" rx="18" stroke="#2A7AB5" stroke-width="1.0" stroke-dasharray="5,3"/>
+<path d="M 1032,74 L 1025,78 L 1025,87 Q 1025,95 1032,97 Q 1039,95 1039,87 L 1039,78 Z" fill="none" stroke="#2A7AB5" stroke-width="1.5"/>
+<text x="1160" y="85" font-size="11" font-weight="500" fill="#FFFFFF" text-anchor="middle" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">Security Layer  ·  pre-flight  ·  post-flight</text>
+<rect x="878" y="758" width="145" height="28" fill="#1A2B3C" rx="14" stroke="#4A6E8A" stroke-width="0.75"/>
+<text x="950" y="773" font-size="9" font-weight="normal" fill="#A0B4C8" text-anchor="middle" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">DeepSeek LLM</text>
+<rect x="1078" y="758" width="145" height="28" fill="#1A2B3C" rx="14" stroke="#4A6E8A" stroke-width="0.75"/>
+<text x="1150" y="773" font-size="9" font-weight="normal" fill="#A0B4C8" text-anchor="middle" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">ChromaDB  ·  RAG</text>
+<rect x="1278" y="758" width="145" height="28" fill="#1A2B3C" rx="14" stroke="#4A6E8A" stroke-width="0.75"/>
+<text x="1350" y="773" font-size="9" font-weight="normal" fill="#A0B4C8" text-anchor="middle" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">SQLite  ·  Eval Log</text>
+<line x1="738" y1="68" x2="738" y2="832" stroke="#1E6091" stroke-width="0.5" stroke-opacity="0.20"/>
+<rect x="30" y="46" width="2.5" height="640" fill="#2ECC8F" rx="1" stroke="none" stroke-width="1.5" fill-opacity="0.4"/>
+<text x="50" y="60" font-size="11" font-weight="500" fill="#A0B4C8" text-anchor="start" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" letter-spacing="1.8" dominant-baseline="middle">KAGGLE AI AGENTS INTENSIVE 2026</text>
+<rect x="50" y="94" width="38" height="38" fill="#2A7AB5" rx="10" stroke="none" stroke-width="1.5"/>
+<path d="M 69 103 v20 M 59 113 h20" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+<text x="50" y="248" font-size="92" font-weight="800" fill="#FFFFFF" text-anchor="start" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" letter-spacing="-2.5" dominant-baseline="middle">SurgMentor</text>
+<rect x="50" y="268" width="320" height="2.5" fill="#2ECC8F" rx="1" stroke="none" stroke-width="1.5"/>
+<text x="50" y="316" font-size="28" font-weight="600" fill="#2ECC8F" text-anchor="start" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" letter-spacing="-0.3" dominant-baseline="middle">Agentic Surgical OSCE Trainer</text>
+<text x="50" y="366" font-size="14" font-weight="normal" fill="#A0B4C8" text-anchor="start" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">Case Retrieval  ·  OSCE Practice  ·  Evaluation  ·  Personalised Study Plans</text>
+<rect x="50" y="404" width="119" height="28" fill="none" rx="14" stroke="#1E6091" stroke-width="1.0"/>
+<text x="109" y="419" font-size="12" font-weight="normal" fill="#A0B4C8" text-anchor="middle" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">Agent Skills</text>
+<rect x="178" y="404" width="80" height="28" fill="none" rx="14" stroke="#1E6091" stroke-width="1.0"/>
+<text x="218" y="419" font-size="12" font-weight="normal" fill="#A0B4C8" text-anchor="middle" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">FastAPI</text>
+<rect x="267" y="404" width="49" height="28" fill="none" rx="14" stroke="#1E6091" stroke-width="1.0"/>
+<text x="291" y="419" font-size="12" font-weight="normal" fill="#A0B4C8" text-anchor="middle" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">RAG</text>
+<rect x="325" y="404" width="88" height="28" fill="none" rx="14" stroke="#1E6091" stroke-width="1.0"/>
+<text x="369" y="419" font-size="12" font-weight="normal" fill="#A0B4C8" text-anchor="middle" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">Security</text>
+<rect x="422" y="404" width="104" height="28" fill="none" rx="14" stroke="#1E6091" stroke-width="1.0"/>
+<text x="474" y="419" font-size="12" font-weight="normal" fill="#A0B4C8" text-anchor="middle" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">Evaluation</text>
+<text x="50" y="492" font-size="11" font-weight="500" fill="#A0B4C8" text-anchor="start" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">OSCE Examination Progression</text>
+<line x1="65" y1="530" x2="255" y2="530" stroke="#2A7AB5" stroke-width="1" stroke-opacity="0.35"/>
+<circle cx="65" cy="530" r="11" fill="#2A7AB5"/>
+<text x="65" y="556" font-size="8" font-weight="normal" fill="#4A6E8A" text-anchor="middle" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">Present</text>
+<circle cx="103" cy="530" r="16" fill="#2ECC8F" fill-opacity="0.18"/>
+<circle cx="103" cy="530" r="11" fill="#2ECC8F"/>
+<text x="103" y="531" font-size="8" font-weight="700" fill="#0B1825" text-anchor="middle" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">2</text>
+<text x="103" y="556" font-size="8" font-weight="normal" fill="#4A6E8A" text-anchor="middle" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">History</text>
+<circle cx="141" cy="530" r="11" fill="none" stroke="#2A7AB5" stroke-width="1.2" stroke-opacity="0.45"/>
+<text x="141" y="556" font-size="8" font-weight="normal" fill="#4A6E8A" text-anchor="middle" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">Examine</text>
+<circle cx="179" cy="530" r="11" fill="none" stroke="#2A7AB5" stroke-width="1.2" stroke-opacity="0.45"/>
+<text x="179" y="556" font-size="8" font-weight="normal" fill="#4A6E8A" text-anchor="middle" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">Diagnose</text>
+<circle cx="217" cy="530" r="11" fill="none" stroke="#2A7AB5" stroke-width="1.2" stroke-opacity="0.45"/>
+<text x="217" y="556" font-size="8" font-weight="normal" fill="#4A6E8A" text-anchor="middle" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">Manage</text>
+<circle cx="255" cy="530" r="11" fill="none" stroke="#2A7AB5" stroke-width="1.2" stroke-opacity="0.45"/>
+<text x="255" y="556" font-size="8" font-weight="normal" fill="#4A6E8A" text-anchor="middle" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">Evaluate</text>
+<line x1="50" y1="820" x2="688" y2="820" stroke="#1E6091" stroke-width="0.5" stroke-opacity="0.28"/>
+<rect x="50" y="840" width="166" height="36" fill="#2ECC8F" rx="18" stroke="none" stroke-width="1.5" fill-opacity="0.13"/>
+<rect x="50" y="840" width="166" height="36" fill="none" rx="18" stroke="#2ECC8F" stroke-width="0.8"/>
+<text x="133" y="858" font-size="13" font-weight="600" fill="#2ECC8F" text-anchor="middle" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">Agents for Good  ✦</text>
+<text x="688" y="858" font-size="12" font-weight="normal" fill="#A0B4C8" text-anchor="end" font-family="Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif" dominant-baseline="middle">Kaggle AI Agents Intensive 2026</text>
+</svg>

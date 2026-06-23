@@ -1,0 +1,28 @@
+# SurgMentor — Python dependencies
+# Install: pip install -r requirements.txt
+
+# ── LLM / Embeddings ─────────────────────────────────────────────────────────
+openai==1.54.0          # DeepSeek client (OpenAI-compatible API)
+httpx==0.27.2           # Pinned: openai 1.54.0 breaks with httpx>=0.28 (unexpected kwarg 'proxies')
+chromadb==0.5.23        # Vector store — must match version used to build db/
+                        # Note: 0.4.24 breaks on NumPy 2.x (np.float_ removed in NumPy 2.0).
+                        # 0.5.23 is the lowest version with NumPy 2.x compatibility that
+                        # retains the PersistentClient / Collection.name API used by all scripts.
+requests==2.32.3        # Jina AI embedding API calls
+
+# ── Data pipeline ─────────────────────────────────────────────────────────────
+pandas==2.2.3
+openpyxl==3.1.5         # Read data/cases.xlsx
+tqdm==4.66.5            # Progress bar for embedding pipeline
+
+# ── Config ────────────────────────────────────────────────────────────────────
+python-dotenv==1.0.1
+
+# ── Demo interface ────────────────────────────────────────────────────────────
+gradio>=4.0,<5.0        # 3-tab web UI (fallback); also deploys to Hugging Face Spaces
+fastapi>=0.111          # Custom HTML/CSS/JS frontend server
+uvicorn[standard]>=0.29 # ASGI server for FastAPI
+
+# ── Agent SDK (to be confirmed at Phase 4) ────────────────────────────────────
+# google-adk             # Uncomment when ADK dependency is confirmed
+# mcp                    # Uncomment for Phase 8 MCP server (stretch)
