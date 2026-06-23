@@ -159,7 +159,7 @@
 
 ## Segment 6 — Wrap  
 **⏱ 4:30–4:50 (20 seconds)**  
-**Screen:** GitHub repository page (once published)
+**Screen:** GitHub repository page — https://github.com/reza3673/SurgMentor-Capstone
 
 > SurgMentor is open source, MIT licensed. The repository is linked in the submission.
 > Three commands from clone to a running system — no cloud infrastructure required.
@@ -196,4 +196,4 @@ Segment 3 (architecture) — judges score on these.
 | LLM response takes > 15 seconds | Say "responses typically take 1–3 seconds; this is a development environment" and wait |
 | FastAPI / web UI throws an error | Switch to `python app.py` (Gradio fallback at localhost:7860) — the demo steps are the same, just different UI styling |
 | Browser zoom resets | Ctrl+0 to restore 100% |
-| eval_log.jsonl command fails | Skip Segment 5 terminal portion; describe the format verbally while showing the code |
+| eval_log.jsonl command fails | Skip Segment 5 terminal portion; describe the format

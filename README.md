@@ -248,7 +248,7 @@ UI is unavailable or for quick local testing.
 
 ## Demo
 
-🎬 **Video:** [Watch the 5-minute demo](#) *(link added after recording)*
+🎬 **Video:** [YOUTUBE_URL_TO_ADD_AFTER_RECORDING]
 
 ### Reproduce the demo manually (5 steps)
 
@@ -348,3 +348,4 @@ surgical education.
 ## License
 
 MIT License. See [LICENSE](LICENSE).
+                       

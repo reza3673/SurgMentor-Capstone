@@ -54,3 +54,16 @@ htmlcov/
 temp/
 tmp/
 *.log
+
+# ── Internal planning documents (archived, not for public repo) ───────────────
+docs/PHASE_*.md
+docs/GAP_ANALYSIS.md
+docs/MIGRATION_PLAN.md
+docs/TARGET_ARCHITECTURE.md
+docs/PROJECT_UNDERSTANDING.md
+docs/IMPLEMENTATION_SEQUENCE_REVIEW.md
+docs/CUSTOM_FRONTEND_PLAN.md
+docs/FRONTEND_REDESIGN_PLAN.md
+docs/ARCHITECTURE_IMAGE_SPEC.md
+docs/COVER_IMAGE_SPEC.md
+project_docs/

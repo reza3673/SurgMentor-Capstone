@@ -144,7 +144,7 @@ The test suite covers 252 tests across six files: security layer, OSCE skills an
 
 ## Repository and Setup
 
-**GitHub:** [SurgMentor-Capstone](https://github.com/reza3673/SurgMentor-Capstone)
+**GitHub:** https://github.com/reza3673/SurgMentor-Capstone
 
 ```bash
 git clone https://github.com/reza3673/SurgMentor-Capstone.git
@@ -159,3 +159,4 @@ python -m uvicorn server:app --host 0.0.0.0 --port 8000
 ```
 
 The pre-built vector database (5 surgical cases, chromadb==0.5.23) is included. No Jina API key is required to run the system. To rebuild from scratch, set `JINA_API_KEY` and run `python scripts/02_embed_and_store.py`.
+                         
