@@ -144,7 +144,7 @@ The test suite covers 252 tests across six files: security layer, OSCE skills an
 
 ## Repository and Setup
 
-**GitHub:** [GITHUB_URL_TO_ADD — placeholder, link pending repository publication]
+**GitHub:** [SurgMentor-Capstone](https://github.com/reza3673/SurgMentor-Capstone)
 
 ```bash
 git clone https://github.com/reza3673/SurgMentor-Capstone.git
