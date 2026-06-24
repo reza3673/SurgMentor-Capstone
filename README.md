@@ -186,7 +186,7 @@ python scripts/03_test_retrieval.py   # verify retrieval works
 ```bash
 # Sandbox-safe (no API keys required)
 CI_NO_LLM=1 CI_NO_GRADIO=1 python -m unittest discover -s tests -v
-# Expected: 252 tests, 0 failures, 11 skipped
+# Expected: 241 passed, 11 skipped, 0 failures
 
 # Full suite (API keys required)
 python -m unittest discover -s tests -v
@@ -329,7 +329,7 @@ SurgMentor-Capstone/
 ├── tests/                          # 252 tests across 6 test files
 ├── data/
 │   └── cases.xlsx                  # Source surgical cases
-└── docs/                           # Architecture diagram and planning documents
+└── docs/                           # Architecture assets, video script, and Kaggle writeup
 ```
 
 ---
