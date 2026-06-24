@@ -1,49 +1,27 @@
 # SurgMentor — Agentic Surgical OSCE Trainer
 
-**Kaggle AI Agents Intensive Capstone Project — *Agents for Good* track**
+**Kaggle AI Agents Intensive Capstone · *Agents for Good* track**
 
-> An agentic system that gives surgical residents unlimited access to structured
-> OSCE examination practice — without requiring a human expert examiner.
-
----
-
-## The Problem
-
-Objective Structured Clinical Examinations (OSCEs) are the gold standard for
-assessing surgical clinical reasoning. They require a trained examiner to present
-a patient case, ask follow-up questions, and score the trainee's responses against
-a structured rubric. This works well in resource-rich teaching hospitals — but expert
-examiners are scarce, their time is expensive, and the number of practice sessions
-a resident can access is sharply limited by their availability.
-
-The consequence is measurable: surgical trainees in lower-resource settings, or
-outside formal teaching rotations, get far fewer OSCE practice opportunities than
-evidence recommends. Clinical reasoning is a skill that degrades without deliberate
-practice. The gap between "trained in a major academic centre" and "trained
-elsewhere" is, in part, a gap in access to structured practice with feedback.
+> An agentic system that gives surgical residents on-demand access to structured OSCE practice — no human examiner required.
 
 ---
 
-## Why Agents?
+## Overview
 
-A retrieval-augmented pipeline (RAG alone) cannot solve this problem. RAG can fetch
-a relevant case, but it cannot maintain conversational state across a multi-turn
-examination, enforce a consistent scoring rubric, switch between pedagogical modes
-(free teaching vs. structured examination vs. remediation), or adapt its
-recommendations to the student's specific historical weak areas. These requirements
-demand an agent loop: a system that perceives student input, classifies intent
-within session context, selects the right skill for the current mode, and evaluates
-its own output — all while maintaining state across turns. The four skills in
-SurgMentor (case retrieval, OSCE examination, evaluation, study planning) are
-independently testable and composable precisely because the controller, not the
-skills, owns state and routing. This is the design that the Kaggle AI Agents
-Intensive course teaches, and it is the right design for this problem.
+Expert surgical examiners are scarce. A resident outside a major academic centre may get a fraction of the OSCE practice that evidence recommends, and clinical reasoning degrades without deliberate repetition.
+
+RAG alone cannot solve this. A retrieval pipeline can fetch a relevant case, but it cannot maintain conversational state across a multi-turn examination, enforce a consistent scoring rubric, or adapt recommendations to a student's historical weak areas. SurgMentor's agent loop — perceive → plan → act → observe — handles all of that through four composable skills routed by a stateful controller.
 
 ---
 
 ## Architecture
 
 ![SurgMentor agent architecture](docs/assets/surgmentor_architecture_1600x900.png)
+
+Five strictly separated layers: **Entry Interfaces** feed through a **Security Layer** (pre-flight sanitisation) into the **Agent Controller**, which routes to one of four **Skills** and persists results in the **Tool/Data Layer** (ChromaDB, SQLite, DeepSeek, eval log).
+
+<details>
+<summary>Mermaid diagram</summary>
 
 ```mermaid
 flowchart TD
@@ -95,79 +73,55 @@ flowchart TD
     POST --> CLI & SPA & GR
 ```
 
-Five layers, strictly separated: Entry Interfaces call into the Security Layer
-(pre-flight), the Agent Controller runs the perceive → plan → act → observe loop,
-Skills are invoked as stateless units via a registry, and the Tool/Data Layer
-contains ChromaDB (vector search), SQLite (student profiles), the DeepSeek LLM,
-and the evaluation log.
+</details>
 
 ---
 
 ## Skills
 
-| Skill | Purpose | Course concept |
-|-------|---------|----------------|
-| `CaseRetrievalSkill` | Embed student query → ChromaDB cosine search → return top-3 cases with sources; biases search toward the student's historical weak areas | Agent Skills (Day 3) |
-| `OSCEExaminerSkill` | 3-phase state machine (init / turn / finish): presents a patient case, asks follow-up questions, hands off to EvaluationSkill on completion | Agent Skills (Day 3) |
-| `EvaluationSkill` | Scores a completed OSCE session 0–10 via LLM rubric; extracts weak areas; persists result to SQLite | Evaluation (Day 4) |
-| `StudyPlannerSkill` | Reads historical weak areas from SQLite; generates a personalised remediation study plan | Agent Skills (Day 3) |
+| Skill | Responsibility | Course concept |
+|-------|---------------|----------------|
+| `CaseRetrievalSkill` | Embeds query → ChromaDB cosine search → top-3 cases with source citations; biases toward student's historical weak areas | Agent Skills (Day 3) |
+| `OSCEExaminerSkill` | 3-phase state machine (init / turn / finish): presents patient case, asks follow-up questions, hands off to EvaluationSkill | Agent Skills (Day 3) |
+| `EvaluationSkill` | Scores completed OSCE 0–10 via LLM rubric; extracts weak areas; persists to SQLite | Evaluation (Day 4) |
+| `StudyPlannerSkill` | Reads historical weak areas from SQLite; generates personalised remediation study plan | Agent Skills (Day 3) |
 
 ---
 
-## Course Concepts Demonstrated
+## Course Concepts
 
-| Concept | Where in code | File |
-|---------|--------------|------|
-| **Agent Architecture / ADK loop** | `AgentController.run()` — explicit PERCEIVE → PLAN → ACT → OBSERVE steps with inline comment labels | `surgmentor/agent/controller.py` |
-| **Context Engineering** | `build_context_bundle()` — per-skill trimmed view of SessionState; reduces token cost and hallucination risk | `surgmentor/agent/context.py` |
-| **Agent Skills** | `Skill` ABC + 4 concrete skill classes; each independently testable; controller routes via `_registry[intent]` | `surgmentor/skills/` |
-| **Security Features** | `SecurityLayer.sanitize_input()` pre-flight (PII, injection, length, hard-block) + `filter_output()` post-flight (disclaimer, step tag) | `surgmentor/security/layer.py` |
+| Concept | Implementation | File |
+|---------|---------------|------|
+| **Agent Architecture** | `AgentController.run()` — explicit PERCEIVE → PLAN → ACT → OBSERVE steps with inline labels | `surgmentor/agent/controller.py` |
+| **Context Engineering** | `build_context_bundle()` — per-skill trimmed SessionState view; reduces token cost and hallucination risk | `surgmentor/agent/context.py` |
+| **Agent Skills** | `Skill` ABC + 4 concrete classes; each independently testable; controller routes via `_registry[intent]` | `surgmentor/skills/` |
+| **Security Features** | `sanitize_input()` pre-flight (PII, injection, length, hard-block) + `filter_output()` post-flight (disclaimer, step tag) | `surgmentor/security/layer.py` |
 | **Evaluation** | `TurnSignal` logged after every controller cycle; `SessionEvaluation` logged per OSCE; machine-readable `eval_log.jsonl` | `surgmentor/evaluation/logger.py` |
-| **Deployability** | CLI (`python run.py`), custom FastAPI web UI (`python -m uvicorn server:app --host 0.0.0.0 --port 8000`), and optional Gradio fallback (`python app.py`); no cloud infrastructure required | `run.py`, `server.py`, `app.py` |
+| **Deployability** | CLI, FastAPI web UI, and optional Gradio fallback — no cloud infrastructure required | `run.py`, `server.py`, `app.py` |
 
 ---
 
-## Setup
+## Quick Start
 
-### Prerequisites
+**Requirements:** Python 3.10 or 3.11 · DeepSeek API key ([free tier](https://platform.deepseek.com))
 
-- Python 3.10 or 3.11
-- DeepSeek API key — [platform.deepseek.com](https://platform.deepseek.com) (free tier works)
-
-> **Note:** A pre-built vector database (5 surgical cases, ChromaDB 0.5.23) is
-> included in the repository. A Jina AI API key is **not required** to run the
-> system out of the box. It is only needed if you want to rebuild the vector store
-> from scratch (see step 4 below).
-
-### Installation
+> A pre-built ChromaDB vector store (5 surgical cases, `chromadb==0.5.23`) is included — no Jina AI key needed to run out of the box.
 
 ```bash
-# 1. Clone the repository
 git clone https://github.com/reza3673/SurgMentor-Capstone.git
 cd SurgMentor-Capstone
-
-# 2. Install dependencies
 pip install -r requirements.txt
+cp .env.example .env   # add DEEPSEEK_API_KEY
 
-# 3. Configure environment
-cp .env.example .env
-# Open .env and fill in DEEPSEEK_API_KEY
-# (JINA_API_KEY only needed if rebuilding the vector database)
-
-# 4. Run
-python run.py       # CLI demo
-# or — custom web UI (primary, recommended)
+# Recommended: custom web UI
 python -m uvicorn server:app --host 0.0.0.0 --port 8000
-# then open http://localhost:8000
-# or — Gradio fallback (optional)
-python app.py       # http://localhost:7860
+# → open http://localhost:8000
 ```
 
 <details>
-<summary>Rebuilding the vector database from scratch (optional)</summary>
+<summary>Rebuild the vector database from scratch (optional)</summary>
 
-The pre-built `db/` directory works out of the box. To rebuild from scratch
-(requires a Jina AI API key and ~2 minutes):
+Requires a Jina AI API key and ~2 minutes. `chromadb==0.5.23` must be installed.
 
 ```bash
 JINA_API_KEY=your-key python scripts/01_prepare_data.py
@@ -175,13 +129,10 @@ JINA_API_KEY=your-key python scripts/02_embed_and_store.py
 python scripts/03_test_retrieval.py   # verify retrieval works
 ```
 
-> **Note:** chromadb==0.5.23 must be installed (see requirements.txt).
-> The pre-built db/ was generated with this exact version.
-
 </details>
 
 <details>
-<summary>Running the test suite</summary>
+<summary>Run the test suite</summary>
 
 ```bash
 # Sandbox-safe (no API keys required)
@@ -197,7 +148,23 @@ python -m unittest discover -s tests -v
 
 ---
 
-## Running SurgMentor
+## Interfaces
+
+### Custom Web UI — primary
+
+```bash
+python -m uvicorn server:app --host 0.0.0.0 --port 8000
+```
+
+Three views at `http://localhost:8000`:
+
+| View | Function |
+|------|----------|
+| **Chat** | Case retrieval and Q&A with source citations |
+| **OSCE** | Structured examination — six-step progress indicator and End & Score button |
+| **Profile** | Historical performance and personalised study plan generation |
+
+No login required.
 
 ### CLI
 
@@ -223,26 +190,14 @@ You: exit
 
 Type `reset` to start a new session. Type `help` for all commands.
 
-### Custom Web UI (primary)
-
-```bash
-python -m uvicorn server:app --host 0.0.0.0 --port 8000
-# Opens at http://localhost:8000
-```
-
-Three views: **Chat** (case retrieval and Q&A with source citations), **OSCE**
-(structured examination with six-step progress indicator and End & Score button),
-**Profile** (historical performance and study plan generation). No login required.
-
-### Gradio fallback (optional)
+### Gradio (optional fallback)
 
 ```bash
 python app.py
-# Opens at http://localhost:7860
+# → http://localhost:7860
 ```
 
-Three-tab Gradio interface covering the same functionality. Use if the custom web
-UI is unavailable or for quick local testing.
+Three-tab interface covering the same functionality. Use if the web UI is unavailable or for quick local testing.
 
 ---
 
@@ -250,38 +205,33 @@ UI is unavailable or for quick local testing.
 
 🎬 **Video:** [YOUTUBE_URL_TO_ADD_AFTER_RECORDING]
 
-### Reproduce the demo manually (5 steps)
+### Reproduce manually (5 steps)
 
-1. `python -m uvicorn server:app --host 0.0.0.0 --port 8000` → open `http://localhost:8000`
-   *Demonstrates: Deployability — custom FastAPI web interface*
+1. Launch the web UI → open `http://localhost:8000`
+   *Demonstrates: Deployability*
 
-2. **Chat** view → type `show me a case about right iliac fossa pain`
-   → Agent classifies `RETRIEVE_CASE` → `CaseRetrievalSkill` → response includes
-   case context and `Sources:` citations
+2. **Chat** → type `show me a case about right iliac fossa pain`
+   → `RETRIEVE_CASE` → `CaseRetrievalSkill` → response includes `Sources:` citations
    *Demonstrates: Agent Skills, Context Engineering*
 
-3. **OSCE** view → click **Start Session**
-   → Agent classifies `START_OSCE` → `OSCEExaminerSkill._init()` → examiner
-   presents a patient case and asks the opening question; six-step progress
-   indicator advances to Step 1
-   *Demonstrates: Agent Architecture (stateful session initiated)*
+3. **OSCE** → click **Start Session**
+   → `START_OSCE` → `OSCEExaminerSkill._init()` → examiner opens case; progress indicator advances to Step 1
+   *Demonstrates: Agent Architecture — stateful session initiated*
 
-4. **OSCE** view → enter 2–3 clinical reasoning responses
-   → Each turn: OSCE override rule routes to `OSCEExaminerSkill._turn()`
-   regardless of intent classification; examiner follows up
-   *Demonstrates: Agent Architecture (session state maintained across turns)*
+4. **OSCE** → enter 2–3 clinical reasoning responses
+   → OSCE override rule forces `OSCEExaminerSkill._turn()` regardless of intent classification
+   *Demonstrates: Agent Architecture — state maintained across turns*
 
-5. **OSCE** view → click **End & Score**
-   → `EvaluationSkill` scores the session; score panel with feedback and weak areas displayed
-   → **Profile** view → **Refresh** shows the session in historical record
-   → `eval_log.jsonl` receives a `TurnSignal` entry for every turn
-   *Demonstrates: Evaluation, Security Features (disclaimer injected in output)*
+5. **OSCE** → click **End & Score**
+   → `EvaluationSkill` scores 0–10; feedback and weak areas displayed
+   → **Profile** → Refresh shows session in historical record; `eval_log.jsonl` updated
+   *Demonstrates: Evaluation, Security Features*
 
 ---
 
-## Evaluation Evidence
+## Evaluation Log
 
-Every agent cycle writes one JSON object to `eval_log.jsonl`:
+Every agent cycle appends one entry to `eval_log.jsonl`:
 
 ```json
 {
@@ -294,7 +244,7 @@ Every agent cycle writes one JSON object to `eval_log.jsonl`:
 }
 ```
 
-Inspect the log after a session:
+Inspect after a session:
 
 ```bash
 python -c "
@@ -336,16 +286,10 @@ SurgMentor-Capstone/
 
 ## Agents for Good
 
-SurgMentor targets the global surgical training gap. Surgical mortality is
-disproportionately high in low- and middle-income countries, where access to
-structured OSCE practice is most limited and expert examiners are fewest. The
-agent system makes structured OSCE practice available on-demand, 24/7, without
-requiring an expert examiner to be present — removing the scarcest bottleneck in
-surgical education.
+Surgical mortality is disproportionately high in low- and middle-income countries, where expert examiners are fewest and structured OSCE practice is hardest to access. SurgMentor makes on-demand OSCE practice available 24/7 — removing the scarcest bottleneck in surgical education.
 
 ---
 
 ## License
 
 MIT License. See [LICENSE](LICENSE).
-                       
